@@ -1,17 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8"><title>호떡카페</title>
-    <style>body{background:black;color:white;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;font-family:sans-serif;overflow:hidden;cursor:pointer;}#n{font-size:75vh;font-weight:bold;}</style>
+    <meta charset="utf-8"><title>호떡카페 전광판</title>
+    <style>
+        /* 바탕: 흰색(#fff), 글자: 빨간색(red) */
+        body { background: #fff; color: red; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; overflow: hidden; cursor: pointer; }
+        #n { font-size: 75vh; font-weight: bold; }
+    </style>
 </head>
-<body onclick="a.play()">
+<body onclick="initAudio()">
     <div id="n">준비</div>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
         firebase.initializeApp({databaseURL: "https://hotteok-call-default-rtdb.asia-southeast1.firebasedatabase.app"});
-        const a = new Audio("https://t1.daumcdn.net/cfile/tistory/9940603D5C35300B02?original");
-        firebase.database().ref("data/num").on("value",(s)=>{const v=s.val();if(v){document.getElementById("n").innerText=v;a.play().catch(()=>{});}});
+        const a = new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1150-pristine.mp3");
+        
+        function initAudio() { 
+            // 클릭 확인용: 잠시 검은색으로 변함
+            document.getElementById("n").style.color = "black";
+            setTimeout(()=>document.getElementById("n").style.color="red", 300);
+            a.play().catch(e => console.log("오디오 준비됨")); 
+        }
+
+        firebase.database().ref("data/num").on("value",(s)=>{
+            const v=s.val();
+            if(v){
+                document.getElementById("n").innerText=v;
+                a.play().catch(()=>{}); 
+            }
+        });
     </script>
 </body>
 </html>
