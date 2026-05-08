@@ -3,9 +3,16 @@
 <head>
     <meta charset="utf-8"><title>호떡카페 전광판</title>
     <style>
-        /* 바탕: 흰색(#fff), 글자: 빨간색(red) */
-        body { background: #fff; color: red; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; overflow: hidden; cursor: pointer; }
-        #n { font-size: 75vh; font-weight: bold; }
+        body { background: #fff; color: red; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: 'Arial Black', sans-serif; overflow: hidden; cursor: pointer; }
+        #n { font-size: 75vh; font-weight: bold; transition: transform 0.3s; }
+        
+        /* 5초 동안 눈에 확 띄게 깜빡이는 애니메이션 */
+        @keyframes blink-bg { 
+            0%, 100% { background: #fff; color: red; } 
+            50% { background: red; color: #fff; } 
+        }
+        .active-call { animation: blink-bg 1s linear infinite; } /* 0.5초 간격으로 무한 반복 */
+        .pop { transform: scale(1.1); }
     </style>
 </head>
 <body onclick="initAudio()">
@@ -17,16 +24,33 @@
         const a = new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1150-pristine.mp3");
         
         function initAudio() { 
-            // 클릭 확인용: 잠시 검은색으로 변함
-            document.getElementById("n").style.color = "black";
-            setTimeout(()=>document.getElementById("n").style.color="red", 300);
-            a.play().catch(e => console.log("오디오 준비됨")); 
+            document.body.style.background = "#eee";
+            setTimeout(()=>document.body.style.background="#fff", 200);
+            a.play().catch(e => console.log("준비완료")); 
         }
 
         firebase.database().ref("data/num").on("value",(s)=>{
             const v=s.val();
             if(v){
-                document.getElementById("n").innerText=v;
+                const el = document.getElementById("n");
+                const b = document.body;
+                el.innerText = v;
+                
+                // 기존 효과 제거 후 다시 시작
+                b.classList.remove("active-call");
+                el.classList.remove("pop");
+                void b.offsetWidth; // 애니메이션 리셋
+                
+                // 깜빡이 시작
+                b.classList.add("active-call");
+                el.classList.add("pop");
+                
+                // 5초(5000ms) 뒤에 깜빡이 멈춤
+                setTimeout(() => {
+                    b.classList.remove("active-call");
+                    el.classList.remove("pop");
+                }, 5000);
+                
                 a.play().catch(()=>{}); 
             }
         });
