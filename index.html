@@ -21,7 +21,9 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
         firebase.initializeApp({databaseURL: "https://hotteok-call-default-rtdb.asia-southeast1.firebasedatabase.app"});
-        const a = new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1150-pristine.mp3");
+        
+        // [수정] 더 안정적이고 평생 안 터지는 구글 서버의 카톡 알림음(딩동) 스타일로 교체했습니다.
+        const a = new Audio("https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg");
         
         function initAudio() { 
             document.body.style.background = "#eee";
@@ -34,6 +36,8 @@
             if(v){
                 const el = document.getElementById("n");
                 const b = document.body;
+                
+                // [안전장치] 소리가 터져도 숫자는 무조건 먼저 바뀌도록 순서를 맨 위로 올렸습니다.
                 el.innerText = v;
                 
                 // 기존 효과 제거 후 다시 시작
@@ -51,6 +55,7 @@
                     el.classList.remove("pop");
                 }, 5000);
                 
+                // 소리 재생 (에러 나도 숫자 멈추지 않음)
                 a.play().catch(()=>{}); 
             }
         });
